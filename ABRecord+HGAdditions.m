@@ -58,6 +58,7 @@ THE SOFTWARE.
 - (NSString *) hg_fullName
 {
     NSString *firstName = [self valueForProperty:kABFirstNameProperty];
+    NSString *middleName = [self valueForProperty:kABMiddleNameProperty];
     NSString *lastName = [self valueForProperty:kABLastNameProperty];
     NSString *orgName = [self valueForProperty:kABOrganizationProperty];
 
@@ -67,19 +68,18 @@ THE SOFTWARE.
 
     if (isCompany)
         return orgName;
-
-    if (0 < firstName.length && 0 < lastName.length)
+	
+        if (middleName != nil)
+			return [NSString stringWithFormat:@"%@ %@ %@", firstName, middleName, lastName];
+        else
+            return [NSString stringWithFormat:@"%@ %@", firstName, lastName];
     {
         // Remember, -sharedAddressBook might return nil
         if ([[ABAddressBook sharedAddressBook] defaultNameOrdering] != kABFirstNameFirst)
-            return [NSString stringWithFormat:@"%@ %@", lastName, firstName];
+            return [NSString stringWithFormat:@"%@ %@ %@", middleName, lastName, firstName];
         else
-            return [NSString stringWithFormat:@"%@ %@", firstName, lastName];
+            return [NSString stringWithFormat:@"%@ %@ %@", firstName, middleName, lastName];
     }
-    else if (0 < firstName.length)
-        return firstName;
-    else if (0 < lastName.length)
-        return lastName;
 
     return nil;
 }
